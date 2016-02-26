@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <attr name="color_no_finger_inner_circle" format="color"/>
+    <attr name="color_no_finger_outer_circle" format="color"/>
+    <attr name="color_finger_on" format="color"/>
+    <attr name="color_finger_up_right" format="color"/>
+    <attr name="color_finger_up_wrong" format="color"/>
+    <attr name="count" format="integer"/>
+    <attr name="tryTimes" format="integer"/>
+    <attr name="showDots" format="boolean"/>
+    <attr name="isLoop" format="boolean"/>
+    <attr name="isAutoPlay" format="boolean"/>
+
+    <declare-styleable name="GestureLockViewGroup">
+        <attr name="color_no_finger_inner_circle"/>
+        <attr name="color_no_finger_outer_circle"/>
+        <attr name="color_finger_on"/>
+        <attr name="color_finger_up_right"/>
+        <attr name="color_finger_up_wrong"/>
+        <attr name="count"/>
+        <attr name="tryTimes"/>
+    </declare-styleable>
+
+    <declare-styleable name="AViewPager">
+        <attr name="showDots"/>
+        <attr name="isLoop"/>
+        <attr name="isAutoPlay"/>
+    </declare-styleable>
+
+</resources>
