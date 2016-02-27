@@ -6,3 +6,5 @@
 .DS_Store
 /build
 /captures
+/avast/local.properties
+/avast/project.properties
