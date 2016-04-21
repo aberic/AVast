@@ -5,7 +5,6 @@ import android.content.res.Resources;
 import android.widget.ImageView;
 
 import cn.aberic.avast.core.ConfigVast;
-import cn.aberic.avast.imageLoader.cache.BitmapCache;
 
 /**
  * 使用ImageLoader前都会通过一个配置类来设置一些基本的东西，比如加载中的图片、加载失败的图片、缓存策略等等.
@@ -16,19 +15,12 @@ import cn.aberic.avast.imageLoader.cache.BitmapCache;
  */
 public class ImageLoaderConfig implements ConfigVast {
 
-    /** 图片缓存配置对象 */
-    public BitmapCache bitmapCache;
     /** 加载图片时的loading和加载失败的图片配置对象 */
     public DisplayConfig displayConfig;
 
     @Override
     public ImageLoaderConfig init(Context context) {
-        displayConfig = new DisplayConfig(context);
-        return this;
-    }
-
-    public ImageLoaderConfig setCache(BitmapCache cache) {
-        bitmapCache = cache;
+        displayConfig = new DisplayConfig().init(context);
         return this;
     }
 

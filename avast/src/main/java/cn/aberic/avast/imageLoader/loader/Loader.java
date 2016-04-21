@@ -1,6 +1,6 @@
 package cn.aberic.avast.imageLoader.loader;
 
-import cn.aberic.avast.imageLoader.request.BitmapRequest;
+import cn.aberic.avast.cache.request.BitmapCacheRequest;
 
 /**
  * 图片加载接口
@@ -14,5 +14,5 @@ public interface Loader {
      * @param request
      *         图片请求
      */
-    void loadImage(BitmapRequest request);
+    void loadImage(BitmapCacheRequest request);
 }

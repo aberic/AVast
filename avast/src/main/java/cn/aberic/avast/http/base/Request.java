@@ -1,11 +1,19 @@
 package cn.aberic.avast.http.base;
 
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 
+import cn.aberic.avast.cache.base.BaseCache;
+import cn.aberic.avast.core.AVast;
 import cn.aberic.avast.http.requests.RequestFiles;
 import cn.aberic.avast.http.requests.RequestParams;
+import cn.aberic.avast.cache.request.StringCacheRequest;
 
 /**
  * Request是抽象，而不是具体。
@@ -69,6 +77,10 @@ public abstract class Request<T> {
     private RequestParams mParams = new RequestParams();
     /** 请求附件 */
     private RequestFiles mFiles = new RequestFiles();
+    /** 字符串缓存 */
+    private static final BaseCache<String> stringCache = AVast.obtain().cache.stringCache;
+    /** 是否缓存结果 */
+    protected boolean isCache = false;
 
     /**
      * 请求构造函数
@@ -84,6 +96,7 @@ public abstract class Request<T> {
         mHttpMethod = method;
         mUrl = url;
         mRequestListener = listener;
+        isCache = true;
     }
 
     /**
@@ -106,8 +119,7 @@ public abstract class Request<T> {
         // 解析得到结果
         T result = parseResponse(response);
         if (null != mRequestListener) {
-            int stCode = null != response ? response.getStatusCode() : REQUEST_WITH_NO_NET;
-            mRequestListener.onComplete(stCode, result);
+            mRequestListener.onComplete(null != response ? response.getStatusCode() : REQUEST_WITH_NO_NET, result);
         }
     }
 
@@ -169,6 +181,19 @@ public abstract class Request<T> {
     }
 
     /**
+     * 发送待上传文件
+     *
+     * @param outStream
+     *         数据输出流
+     */
+    public void dealFilesBody(DataOutputStream outStream) {
+        RequestFiles files = getFile();
+        if (files != null && files.get().size() > 0) {
+            dealFiles(outStream, files.get());
+        }
+    }
+
+    /**
      * 将参数转换为URL指定编码参数
      *
      * @param params
@@ -194,6 +219,60 @@ public abstract class Request<T> {
     }
 
     /**
+     * 处理待上传文件
+     *
+     * @param outStream
+     *         数据输出流
+     * @param files
+     *         参数集
+     */
+    private void dealFiles(DataOutputStream outStream, HashMap<String, File> files) {
+        if (files != null) {
+            String BOUNDARY = java.util.UUID.randomUUID().toString();
+            String PREFIX = "--", LINEND = "\r\n";
+            String CHARSET = "UTF-8";
+            try {
+                for (HashMap.Entry<String, File> file : files.entrySet()) {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(PREFIX);
+                    sb.append(BOUNDARY);
+                    sb.append(LINEND);
+                    sb.append("Content-Disposition: form-data; name=\"file\"; filename=\"").append(file.getKey()).append("\"").append(LINEND);
+                    sb.append("Content-Type: application/octet-stream; charset=").append(CHARSET).append(LINEND);
+                    sb.append(LINEND);
+                    outStream.write(sb.toString().getBytes());
+                    InputStream is = new FileInputStream(file.getValue());
+                    byte[] buffer = new byte[1024];
+                    int len;
+                    while ((len = is.read(buffer)) != -1) {
+                        outStream.write(buffer, 0, len);
+                    }
+                    is.close();
+                    outStream.write(LINEND.getBytes());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 缓存
+     *
+     * @param request
+     *         请求
+     * @param result
+     *         请求结果
+     */
+    protected void cacheResult(StringCacheRequest request, String result) {
+        if (null != result && null != stringCache) {
+            synchronized (stringCache) {
+                stringCache.put(request, result);
+            }
+        }
+    }
+
+    /**
      * 网络请求 Listener ,会被执行在UI线程
      *
      * @param <T>
@@ -209,6 +288,20 @@ public abstract class Request<T> {
          *         请求类型
          */
         void onComplete(int stCode, T response);
+    }
+
+    /** 下载任务时,监听下载进度 */
+    public interface LoadListener {
+
+        /**
+         * 得到下载进度
+         *
+         * @param total
+         *         下载总量(单位字节)
+         * @param loaded
+         *         下载当前量(单位字节)
+         */
+        void load(int total, int loaded);
     }
 
 }

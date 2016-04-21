@@ -4,12 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#55000000"
-    android:gravity="end|bottom"
-    android:orientation="horizontal"
-    android:paddingEnd="16dp"
-    android:paddingLeft="0dp"
-    android:paddingRight="16dp"
-    android:paddingStart="0dp">
+    android:gravity="center"
+    android:orientation="horizontal">
 
 </LinearLayout>

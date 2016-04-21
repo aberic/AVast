@@ -2,11 +2,12 @@ package cn.aberic.avast.imageLoader.loader;
 
 import android.graphics.Bitmap;
 import android.net.Uri;
-
-import java.io.File;
+import android.os.Process;
 
 import cn.aberic.avast.core.AVast;
-import cn.aberic.avast.imageLoader.request.BitmapRequest;
+import cn.aberic.avast.cache.request.BitmapCacheRequest;
+
+import java.io.File;
 
 /**
  * 作者：Aberic on 16/2/17 00:41
@@ -15,14 +16,20 @@ import cn.aberic.avast.imageLoader.request.BitmapRequest;
 public class FileLoader extends AbsLoader {
 
     @Override
-    protected void onLoadImage(BitmapRequest request) {
-        String imagePath = Uri.parse(request.imageUri).getPath();
+    protected void onLoadImage(final BitmapCacheRequest request) {
+        final String imagePath = Uri.parse(request.imageUri).getPath();
         File imgFile = new File(imagePath);
         if (imgFile.exists()) {
-            Bitmap bitmap = AVast.obtain().util.imageCompressSize.decodeSampledBitmapFromFile(
-                    imagePath, request.getImageViewWidth(), request.getImageViewHeight());
-            cacheBitmap(request, bitmap);// 缓存图片
-            deliveryToUIThread(request, bitmap);
+            AVast.obtain().threadPool.submitFixed(new Runnable() {
+                @Override
+                public void run() {
+                    Process.setThreadPriority(Process.THREAD_PRIORITY_DEFAULT);
+                    Bitmap bitmap = AVast.obtain().util.imageCompressSize.decodeSampledBitmapFromFile(
+                            imagePath, request.getImageViewWidth(), request.getImageViewHeight());
+                    cacheBitmap(request, bitmap);// 缓存图片
+                    deliveryToUIThread(request, bitmap);
+                }
+            });
         }
     }
 }

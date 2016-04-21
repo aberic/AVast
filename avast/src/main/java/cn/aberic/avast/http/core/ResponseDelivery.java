@@ -2,11 +2,12 @@ package cn.aberic.avast.http.core;
 
 import android.os.Handler;
 import android.os.Looper;
-
-import java.util.concurrent.Executor;
+import android.support.annotation.NonNull;
 
 import cn.aberic.avast.http.base.Request;
 import cn.aberic.avast.http.base.Response;
+
+import java.util.concurrent.Executor;
 
 /**
  * 不管是从缓存中获取还是从网络上获取，我们得到的都是一个Response对象，最后我们通过ResponseDelivery对象将结果分发给UI线程。
@@ -46,7 +47,7 @@ class ResponseDelivery implements Executor {
     }
 
     @Override
-    public void execute(Runnable command) {
+    public void execute(@NonNull Runnable command) {
         mResponseHandler.post(command);
     }
 }

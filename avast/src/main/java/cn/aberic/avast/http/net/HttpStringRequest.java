@@ -8,6 +8,7 @@ import java.net.HttpURLConnection;
 import java.util.zip.GZIPInputStream;
 
 import cn.aberic.avast.core.AVast;
+import cn.aberic.avast.http.base.Request;
 import cn.aberic.avast.http.base.Response;
 
 /**
@@ -25,7 +26,7 @@ public class HttpStringRequest extends HttpBaseRequest {
      * @return 请求相应
      */
     @Override
-    protected Response fetchResponse(HttpURLConnection conn) throws IOException {
+    protected Response fetchResponse(HttpURLConnection conn, Request.LoadListener loadListener) throws IOException {
         Response response = new Response();
         response.setStatusCode(conn.getResponseCode());
         if (HttpURLConnection.HTTP_OK == conn.getResponseCode()) {// 连接成功才处理数据

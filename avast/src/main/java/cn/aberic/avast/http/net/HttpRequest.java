@@ -17,9 +17,11 @@ public interface HttpRequest {
      *
      * @param request
      *         待执行的请求
+     * @param loadListener
+     *         下载任务时,监听下载进度
      *
      * @return 请求结果
      */
-    Response performRequest(Request<?> request);
+    Response performRequest(Request<?> request, Request.LoadListener loadListener);
 
 }

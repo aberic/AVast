@@ -4,9 +4,9 @@ import android.graphics.Bitmap;
 import android.widget.ImageView;
 
 import cn.aberic.avast.core.AVast;
-import cn.aberic.avast.imageLoader.cache.BitmapCache;
+import cn.aberic.avast.cache.base.BaseCache;
 import cn.aberic.avast.imageLoader.config.DisplayConfig;
-import cn.aberic.avast.imageLoader.request.BitmapRequest;
+import cn.aberic.avast.cache.request.BitmapCacheRequest;
 
 /**
  * 图片加载过程:
@@ -21,10 +21,10 @@ import cn.aberic.avast.imageLoader.request.BitmapRequest;
 public abstract class AbsLoader implements Loader {
 
     /** 图片缓存 */
-    private static final BitmapCache mCache = AVast.obtain().image.getConfig().bitmapCache;
+    private static final BaseCache<Bitmap> mCache = AVast.obtain().cache.bitmapCache;
 
     @Override
-    public void loadImage(BitmapRequest request) {
+    public void loadImage(BitmapCacheRequest request) {
         // 从缓存中获取
         Bitmap bitmap = mCache.get(request);
         if (null == bitmap) {// 没有缓存
@@ -41,7 +41,7 @@ public abstract class AbsLoader implements Loader {
      * @param request
      *         图片加载请求
      */
-    protected abstract void onLoadImage(BitmapRequest request);
+    protected abstract void onLoadImage(BitmapCacheRequest request);
 
     /**
      * 缓存图片
@@ -51,7 +51,7 @@ public abstract class AbsLoader implements Loader {
      * @param bitmap
      *         图片
      */
-    protected void cacheBitmap(BitmapRequest request, Bitmap bitmap) {
+    protected void cacheBitmap(BitmapCacheRequest request, Bitmap bitmap) {
         if (null != bitmap && null != mCache) {
             synchronized (mCache) {
                 mCache.put(request, bitmap);
@@ -65,7 +65,7 @@ public abstract class AbsLoader implements Loader {
      * @param request
      *         图片加载请求
      */
-    protected void showLoading(final BitmapRequest request) {
+    protected void showLoading(final BitmapCacheRequest request) {
         final ImageView imageView = request.getImageView();
         if (request.isImageViewTagValid() && hasLoadingPlaceHolder(request.displayConfig)) {
             imageView.post(new Runnable() {
@@ -85,7 +85,7 @@ public abstract class AbsLoader implements Loader {
      * @param bitmap
      *         图片
      */
-    protected void deliveryToUIThread(final BitmapRequest request, final Bitmap bitmap) {
+    protected void deliveryToUIThread(final BitmapCacheRequest request, final Bitmap bitmap) {
         ImageView imageView = request.getImageView();
         if (null != imageView) {
             imageView.post(new Runnable() {
@@ -105,7 +105,7 @@ public abstract class AbsLoader implements Loader {
      * @param bitmap
      *         图片
      */
-    protected void updateImageView(BitmapRequest request, Bitmap bitmap) {
+    protected void updateImageView(BitmapCacheRequest request, Bitmap bitmap) {
         ImageView imageView = request.getImageView();
         imageView.setScaleType(null != request.displayConfig.scaleType ? request.displayConfig.scaleType : ImageView.ScaleType.CENTER_CROP);
         String uri = request.imageUri;
@@ -120,7 +120,7 @@ public abstract class AbsLoader implements Loader {
         }
     }
 
-    private void showImageShape(boolean isBitmap, BitmapRequest request, ImageView imageView, Bitmap bitmap) {
+    private void showImageShape(boolean isBitmap, BitmapCacheRequest request, ImageView imageView, Bitmap bitmap) {
         switch (request.displayConfig.shapeConfig.shapeType) {
             case NORMAL:
                 if (isBitmap) {

@@ -13,12 +13,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 class AThreadFactory implements ThreadFactory {
 
     private final String mName;
-    private final int mPriority;
     private final AtomicInteger mNumber = new AtomicInteger();
 
-    public AThreadFactory(String name, int priority) {
-        mName = name;// 线程池的名称
-        mPriority = priority;//线程池的优先级
+    public AThreadFactory(String name) {
+        mName = name;// 线程的名称
     }
 
     @Override
@@ -26,8 +24,6 @@ class AThreadFactory implements ThreadFactory {
         return new Thread(r, mName + "-" + mNumber.getAndIncrement()) {
             @Override
             public void run() {
-                /// 设置线程的优先级
-                Process.setThreadPriority(mPriority);
                 super.run();
             }
         };

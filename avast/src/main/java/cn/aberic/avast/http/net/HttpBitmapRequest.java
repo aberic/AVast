@@ -7,9 +7,10 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 
+import cn.aberic.avast.cache.impl.BitmapDiskCache;
 import cn.aberic.avast.core.AVast;
+import cn.aberic.avast.http.base.Request;
 import cn.aberic.avast.http.base.Response;
-import cn.aberic.avast.imageLoader.cache.DiskCache;
 
 /**
  * 作者：Aberic on 16/2/15 14:38
@@ -26,11 +27,11 @@ public class HttpBitmapRequest extends HttpBaseRequest {
      * @return 请求相应
      */
     @Override
-    protected Response fetchResponse(HttpURLConnection conn) throws IOException {
+    protected Response fetchResponse(HttpURLConnection conn, Request.LoadListener loadListener) throws IOException {
         Response response = new Response();
         response.setStatusCode(conn.getResponseCode());
 
-        BufferedInputStream bis = new BufferedInputStream(conn.getInputStream(), DiskCache.IO_BUFFER_SIZE);
+        BufferedInputStream bis = new BufferedInputStream(conn.getInputStream(), BitmapDiskCache.IO_BUFFER_SIZE);
         Bitmap bitmap = BitmapFactory.decodeStream(bis);
 
         response.setBitmap(bitmap);

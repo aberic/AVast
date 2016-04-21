@@ -13,7 +13,7 @@ import cn.aberic.avast.http.base.Response;
 public class JsonRequest extends Request<JSONObject> {
 
     /**
-     * 请求构造函数
+     * 请求构造函数,返回数据类型为 JSON 的请求
      *
      * @param method
      *         http请求方法

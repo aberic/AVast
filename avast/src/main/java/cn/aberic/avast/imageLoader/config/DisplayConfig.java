@@ -24,15 +24,10 @@ public class DisplayConfig implements ConfigVast {
 
     public ShapeConfig shapeConfig;
 
-    public DisplayConfig(Context context) {
-        this.context = context;
-        shapeConfig = new ShapeConfig(context.getResources(), 20, true);
-    }
-
     @Override
     public DisplayConfig init(Context context) {
         this.context = context;
-//        shapeConfig = new ShapeConfig().init(context);
+        shapeConfig = new ShapeConfig(context.getResources(), 20, true);
         return this;
     }
 }

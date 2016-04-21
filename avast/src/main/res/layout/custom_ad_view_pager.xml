@@ -16,6 +16,5 @@
         android:id="@+id/view_stub_custom_ad_view_pager_for_dot"
         android:layout_width="match_parent"
         android:layout_height="20dp"
-        android:layout_alignParentBottom="true"
         android:layout="@layout/view_stub_custom_ad_view_pager"/>
 </RelativeLayout>

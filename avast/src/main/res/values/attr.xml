@@ -11,6 +11,14 @@
     <attr name="showDots" format="boolean"/>
     <attr name="isLoop" format="boolean"/>
     <attr name="isAutoPlay" format="boolean"/>
+    <attr name="marginBottom" format="integer"/>
+    <attr name="dotBackground" format="color"/>
+    <attr name="dotRes" format="reference"/>
+    <attr name="dotChooseRes" format="reference"/>
+    <attr name="dotMargins" format="integer"/>
+    <attr name="loadingView" format="reference"/>
+    <attr name="emptyView" format="reference"/>
+    <attr name="errorView" format="reference"/>
 
     <declare-styleable name="GestureLockViewGroup">
         <attr name="color_no_finger_inner_circle"/>
@@ -26,6 +34,17 @@
         <attr name="showDots"/>
         <attr name="isLoop"/>
         <attr name="isAutoPlay"/>
+        <attr name="marginBottom"/>
+        <attr name="dotBackground"/>
+        <attr name="dotRes"/>
+        <attr name="dotChooseRes"/>
+        <attr name="dotMargins"/>
+    </declare-styleable>
+
+    <declare-styleable name="LoadContentLayout">
+        <attr name="errorView"/>
+        <attr name="emptyView"/>
+        <attr name="loadingView"/>
     </declare-styleable>
 
 </resources>

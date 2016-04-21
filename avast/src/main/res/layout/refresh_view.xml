@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:padding="8dp"
+    tools:context=".view.refresh.RefreshView">
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/refresh_view_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
+        android:src="@mipmap/ic_launcher"/>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/refresh_view_brief"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/refresh_view_image"
+        android:layout_toRightOf="@+id/refresh_view_image"
+        android:text="下拉刷新"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"/>
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/refresh_view_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/refresh_view_brief"
+        android:layout_marginTop="4dp"
+        android:layout_toEndOf="@+id/refresh_view_image"
+        android:layout_toRightOf="@+id/refresh_view_image"
+        android:text="最后更新:"
+        android:textColor="@android:color/black"
+        android:textSize="12sp"/>
+
+</RelativeLayout>

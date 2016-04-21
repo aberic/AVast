@@ -6,25 +6,24 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-
 import cn.aberic.avast.R;
 import cn.aberic.avast.core.AVast;
 import cn.aberic.avast.core.CallBack;
-import cn.aberic.avast.view.loopBanner.entity.BannerItem;
+
+import java.util.ArrayList;
 
 public class AViewPagerAdapter extends PagerAdapter {
 
     private ArrayList<View> mViews;
-    private ArrayList<BannerItem> mBannerItems;
+    private ArrayList<String> mImgPaths;
     private CallBack.OnItemClickListener mListener;
 
-    public AViewPagerAdapter(ArrayList<View> views, ArrayList<BannerItem> bannerItems) {
+    public AViewPagerAdapter(ArrayList<View> views, ArrayList<String> imgPaths) {
         this.mViews = views;
-        this.mBannerItems = bannerItems;
+        this.mImgPaths = imgPaths;
     }
 
-    public void setOnPagerClick(CallBack.OnItemClickListener listener){
+    public void setOnPagerClick(CallBack.OnItemClickListener listener) {
         this.mListener = listener;
     }
 
@@ -39,12 +38,14 @@ public class AViewPagerAdapter extends PagerAdapter {
         // TODO Auto-generated method stub
         View view = mViews.get(position);// 获取当前view
         AppCompatImageView imageView = (AppCompatImageView) view.findViewById(R.id.item_image_view_img);
-        AVast.obtain().image.bindImage(imageView, mBannerItems.get(position).imgPath);
+        AVast.obtain().image.bindImage(imageView, mImgPaths.get(position));
         view.setOnClickListener(new OnClickListener() {// 当前view单击事件
 
             @Override
             public void onClick(View v) {
-                mListener.onItemClick(v, position);
+                if (null != mListener) {
+                    mListener.onItemClick(v, position);
+                }
             }
         });
         container.removeView(mViews.get(position));

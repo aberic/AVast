@@ -34,6 +34,10 @@ public class RequestParams {
         map.put(key, String.valueOf(value));
     }
 
+    public String getValue(Object key) {
+        return map.get((String)key);
+    }
+
     public HashMap<String, String> get() {
         return map;
     }

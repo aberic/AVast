@@ -4,13 +4,12 @@ import android.graphics.Bitmap;
 import android.util.Log;
 import android.widget.ImageView;
 
-import cn.aberic.avast.imageLoader.cache.BitmapCache;
-import cn.aberic.avast.imageLoader.cache.MemoryCache;
-import cn.aberic.avast.imageLoader.cache.NoCache;
+import cn.aberic.avast.cache.request.BitmapCacheRequest;
+import cn.aberic.avast.cache.impl.BitmapDoubleCache;
+import cn.aberic.avast.core.AVast;
 import cn.aberic.avast.imageLoader.config.DisplayConfig;
 import cn.aberic.avast.imageLoader.config.ImageLoaderConfig;
 import cn.aberic.avast.imageLoader.loader.LoaderManager;
-import cn.aberic.avast.imageLoader.request.BitmapRequest;
 import cn.aberic.avast.shape.model.Shape;
 
 /**
@@ -20,20 +19,17 @@ import cn.aberic.avast.shape.model.Shape;
  */
 public class AImage {
 
-    /** 缓存 */
-    private volatile BitmapCache mCache = new MemoryCache();
     /** 图片加载配置对象 */
     private ImageLoaderConfig mConfig;
 
     public AImage(ImageLoaderConfig config) {
         mConfig = config;
-        mCache = mConfig.bitmapCache;
         checkCache();
     }
 
     private void checkCache() {
-        if (null == mCache) {
-            mCache = new NoCache();
+        if (null == AVast.obtain().cache.bitmapCache) {
+            AVast.obtain().cache.bitmapCache = new BitmapDoubleCache();
         }
     }
 
@@ -50,7 +46,7 @@ public class AImage {
     }
 
     public void bindImage(ImageView imageView, String uri, DisplayConfig config, ImageListener listener) {
-        BitmapRequest request = new BitmapRequest(imageView, uri, config, listener);
+        BitmapCacheRequest request = new BitmapCacheRequest(imageView, uri, config, listener);
         // 加载的配置对象,如果没有设置则使用ImageLoader的配置
         request.displayConfig = request.displayConfig != null ? request.displayConfig : mConfig.displayConfig;
         request.displayConfig.shapeConfig.shapeType = Shape.ShapeType.NORMAL;
@@ -59,7 +55,7 @@ public class AImage {
     }
 
     public void bindImageInCorner(ImageView imageView, String uri) {
-        BitmapRequest request = new BitmapRequest(imageView, uri, null, null);
+        BitmapCacheRequest request = new BitmapCacheRequest(imageView, uri, null, null);
         // 加载的配置对象,如果没有设置则使用ImageLoader的配置
         request.displayConfig = mConfig.displayConfig;
         request.displayConfig.shapeConfig.shapeType = Shape.ShapeType.CORNER;
@@ -68,7 +64,7 @@ public class AImage {
     }
 
     public void bindImageInCircular(ImageView imageView, String uri) {
-        BitmapRequest request = new BitmapRequest(imageView, uri, null, null);
+        BitmapCacheRequest request = new BitmapCacheRequest(imageView, uri, null, null);
         // 加载的配置对象,如果没有设置则使用ImageLoader的配置
         request.displayConfig = mConfig.displayConfig;
         request.displayConfig.shapeConfig.shapeType = Shape.ShapeType.CIRCULAR;
@@ -78,10 +74,6 @@ public class AImage {
 
     public ImageLoaderConfig getConfig() {
         return mConfig;
-    }
-
-    public void clearCache() {
-        mCache.clearCache();
     }
 
     private String parseSchema(String uri) {

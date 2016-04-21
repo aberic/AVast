@@ -10,6 +10,7 @@ import javax.net.ssl.SSLSocketFactory;
  */
 public class HttpUrlConnConfig extends HttpConfig {
 
+
     private static HttpUrlConnConfig sConfig = new HttpUrlConnConfig();
 
     private SSLSocketFactory mSSlSocketFactory = null;

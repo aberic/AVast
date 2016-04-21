@@ -65,7 +65,9 @@ public class GestureLockViewGroup extends RelativeLayout {
         /** 手势输入少于4位 */
         LOCK_INPUT_LESS,
         /** 手势输入次数超过5次 */
-        LOCK_INPUT_OVER_TIME
+        LOCK_INPUT_OVER_TIME,
+        /** 当按压屏幕时 */
+        LOCK_INPUT_PRESS
     }
 
     public GestureLockViewGroup(Context context, AttributeSet attrs) {
@@ -157,8 +159,12 @@ public class GestureLockViewGroup extends RelativeLayout {
         switch (action) {
             case MotionEvent.ACTION_DOWN:
                 reset();
+                mOnGestureLockViewListener.onLockInputResult(LockInputResult.LOCK_INPUT_PRESS);
                 break;
             case MotionEvent.ACTION_MOVE:
+                if (this.mMaxTryTimes == 0){
+                    return false;
+                }
                 mPaint.setColor(mColorFingerOn);
                 mPaint.setAlpha(50);
                 GestureLockView child = getChildIdByPos(x, y);

@@ -1,13 +1,11 @@
 package cn.aberic.avast.http.net;
 
+import android.util.Log;
+
 import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Set;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -24,16 +22,16 @@ import cn.aberic.avast.http.config.HttpUrlConnConfig;
 public abstract class HttpBaseRequest implements HttpRequest {
 
     @Override
-    public Response performRequest(Request<?> request) {
+    public Response performRequest(Request<?> request, Request.LoadListener loadListener) {
         HttpURLConnection conn = null;
         try {
             conn = createHttpURLConnection(request.getUrl());// 构建 HttpURLConnection
             setRequestHeaders(conn, request);// 设置 headers
             setRequestParams(conn, request);// // 设置 params 参数
             configHttps(request);// https 配置
-            return fetchResponse(conn);
+            return fetchResponse(conn, loadListener);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.w("HttpBaseRequest", "网络连接失败,IOException = " + e.getMessage());
         } finally {
             if (null != conn) {
                 conn.disconnect();
@@ -68,6 +66,48 @@ public abstract class HttpBaseRequest implements HttpRequest {
     }
 
     /**
+     * 设置连接请求属性(HTTP 请求头部信息)
+     *
+     * @param conn
+     *         请求连接
+     * @param request
+     *         请求
+     */
+    private void setRequestHeaders(HttpURLConnection conn, Request<?> request) {
+        Set<String> headersKeys = request.getHeaders().keySet();
+        for (String headerName : headersKeys) {
+            conn.setRequestProperty(headerName, request.getHeaders().get(headerName));
+        }
+        conn.setRequestProperty("Accept-Encoding", "gzip");// 需要设置 gzip的请求头 才可以获取Content-Encoding响应码
+    }
+
+    /**
+     * 设置并处理连接请求参数集
+     *
+     * @param conn
+     *         请求连接
+     * @param request
+     *         请求
+     *
+     * @throws IOException
+     */
+    private void setRequestParams(HttpURLConnection conn, Request<?> request) throws IOException {
+        Request.HttpMethod method = request.getHttpMethod();// 获取请求方法
+        conn.setRequestMethod(method.toString());// 设置连接请求方法
+        // 添加参数信息
+        byte[] body = request.getParamsBody();
+        if (null != body) { // 参数是否为空
+            conn.setDoOutput(true);// 当参数不为空时才允许输出
+            conn.addRequestProperty(Request.HEADER_CONTENT_TYPE, request.getBodyContentType()); // 当需要传递参数时,方设置头部信息
+            DataOutputStream outStream = new DataOutputStream(conn.getOutputStream()); // 写出数据流方式
+            outStream.write(body); // 写出参数信息
+            request.dealFilesBody(outStream); // 如果存在附件,则写出附件信息
+            outStream.flush(); // 强制刷新写出
+            outStream.close(); // 关闭输出流
+        }
+    }
+
+    /**
      * 根据请求配置 Https
      *
      * @param request
@@ -85,75 +125,6 @@ public abstract class HttpBaseRequest implements HttpRequest {
     }
 
     /**
-     * 设置连接请求属性(HTTP 请求头部信息)
-     *
-     * @param conn
-     *         请求连接
-     * @param request
-     *         请求
-     */
-    private void setRequestHeaders(HttpURLConnection conn, Request<?> request) {
-        Set<String> headersKeys = request.getHeaders().keySet();
-        for (String headerName : headersKeys) {
-            conn.setRequestProperty(headerName, request.getHeaders().get(headerName));
-        }
-        conn.setRequestProperty("Accept-Encoding", "gzip");// 需要设置 gzip的请求头 才可以获取Content-Encoding响应码
-    }
-
-    /**
-     * 设置连接请求参数集
-     *
-     * @param conn
-     *         请求连接
-     * @param request
-     *         请求
-     *
-     * @throws IOException
-     */
-    private void setRequestParams(HttpURLConnection conn, Request<?> request) throws IOException {
-        Request.HttpMethod method = request.getHttpMethod();// 获取请求方法
-        conn.setRequestMethod(method.toString());// 设置连接请求方法
-        // 添加参数信息
-        byte[] body = request.getParamsBody();
-        if (null != body) {
-            conn.setDoOutput(true);// 允许输出
-            conn.addRequestProperty(Request.HEADER_CONTENT_TYPE, request.getBodyContentType());
-
-            DataOutputStream outStream = new DataOutputStream(conn.getOutputStream());
-            outStream.write(body);
-
-            HashMap<String, File> files = null != request.getFile() ? request.getFile().get() : null;
-            // 发送文件数据
-            if (files != null) {
-                String BOUNDARY = java.util.UUID.randomUUID().toString();
-                String PREFIX = "--", LINEND = "\r\n";
-                String CHARSET = "UTF-8";
-                for (HashMap.Entry<String, File> file : files.entrySet()) {
-                    StringBuilder sb = new StringBuilder();
-                    sb.append(PREFIX);
-                    sb.append(BOUNDARY);
-                    sb.append(LINEND);
-                    sb.append("Content-Disposition: form-data; name=\"file\"; filename=\"").append(file.getKey()).append("\"").append(LINEND);
-                    sb.append("Content-Type: application/octet-stream; charset=").append(CHARSET).append(LINEND);
-                    sb.append(LINEND);
-                    outStream.write(sb.toString().getBytes());
-                    InputStream is = new FileInputStream(file.getValue());
-                    byte[] buffer = new byte[1024];
-                    int len;
-                    while ((len = is.read(buffer)) != -1) {
-                        outStream.write(buffer, 0, len);
-                    }
-                    is.close();
-                    outStream.write(LINEND.getBytes());
-                }
-            }
-
-            outStream.flush();
-            outStream.close();
-        }
-    }
-
-    /**
      * 获取请求结果(根据 HttpURLConnection 返回 Response 相应)
      *
      * @param conn
@@ -161,6 +132,6 @@ public abstract class HttpBaseRequest implements HttpRequest {
      *
      * @return 请求相应
      */
-    protected abstract Response fetchResponse(HttpURLConnection conn) throws IOException;
+    protected abstract Response fetchResponse(HttpURLConnection conn, Request.LoadListener loadListener) throws IOException;
 
 }

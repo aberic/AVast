@@ -4,10 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.widget.ImageView;
 
-import cn.aberic.avast.imageLoader.cache.BitmapCache;
-import cn.aberic.avast.imageLoader.cache.DoubleCache;
 import cn.aberic.avast.imageLoader.config.ImageLoaderConfig;
-import cn.aberic.avast.util.AUtilConfig;
 
 /**
  * 作者：Aberic on 16/2/18 20:19
@@ -15,26 +12,45 @@ import cn.aberic.avast.util.AUtilConfig;
  */
 public class AVastConfig implements ConfigVast {
 
-    public AUtilConfig utilConfig;
-    ImageLoaderConfig imageLoaderConfig;
+    protected Context mContext;
+    protected ImageLoaderConfig imageLoaderConfig;
 
-    public AVastConfig setCache(BitmapCache cache) {
-        imageLoaderConfig.setCache(cache);
-        return this;
-    }
-
+    /**
+     * 设置 ImageLoader 加载中图片
+     *
+     * @param resId
+     *         资源 id
+     *
+     * @return 本类
+     */
     public AVastConfig setLoading(int resId) {
-        imageLoaderConfig.displayConfig.loadingResId = resId;
+        imageLoaderConfig.setLoading(resId);
         return this;
     }
 
+    /**
+     * 设置 ImageLoader 加载失败图片
+     *
+     * @param resId
+     *         资源 id
+     *
+     * @return 本类
+     */
     public AVastConfig setFail(int resId) {
-        imageLoaderConfig.displayConfig.failedResId = resId;
+        imageLoaderConfig.setFail(resId);
         return this;
     }
 
+    /**
+     * 设置 ImageLoader 加载图片 ScaleType
+     *
+     * @param scaleType
+     *         scaleType
+     *
+     * @return 本类
+     */
     public AVastConfig setImageViewScaleType(ImageView.ScaleType scaleType) {
-        imageLoaderConfig.displayConfig.scaleType = scaleType;
+        imageLoaderConfig.setImageViewScaleType(scaleType);
         return this;
     }
 
@@ -45,11 +61,10 @@ public class AVastConfig implements ConfigVast {
 
     @Override
     public AVastConfig init(Context context) {
-        utilConfig = new AUtilConfig().init(context);
-        imageLoaderConfig = new ImageLoaderConfig().init(context)
-                .setImageViewScaleType(ImageView.ScaleType.CENTER_CROP )
-                .setCache(new DoubleCache(context))// 默认双缓存机制
-                .setRes(context.getResources());
+        mContext = context;
+        imageLoaderConfig = new ImageLoaderConfig().init(mContext)
+                .setImageViewScaleType(ImageView.ScaleType.CENTER_CROP)
+                .setRes(mContext.getResources());
         return this;
     }
 }
