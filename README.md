@@ -74,6 +74,17 @@ AVast.obtain().image.bindImageInCorner(ImageView imageView, String uri);
 // 圆形加载
 AVast.obtain().image.bindImageInCircular(ImageView imageView, String uri);
 ```
+```xml
+<cn.aberic.avast.view.AImageView
+    android:id="@+id/img"
+    xmlns:avast="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"/>
+```
+```java
+AImageView aImageView = (AImageView) findViewById(R.id.img);
+aImageView.setImageUrl(String url); // 设置加载图片(允许类型(http://-mipmap://-drawable://-file://))
+```
 ##### cache
 ```java
 // 缓存 String
@@ -123,6 +134,32 @@ avast:color_finger_on="0xFF939090" // 手指按住时内外圆颜色
 avast:color_finger_up_right="0xFF939090" // 手指离开时内外圆颜色(密码正确)
 avast:color_finger_up_wrong="0xFF939090" // 手指离开时内外圆颜色(密码错误)
 ```
+```java
+GestureLockViewGroup gestureLockViewGroup = (GestureLockViewGroup) findViewById(R.id.gestureLockViewGroup)；
+gestureLockViewGroup.setAnswer(String src); // 设置密码
+gestureLockViewGroup.setOnGestureLockViewListener(
+      new GestureLockViewGroup.OnGestureLockViewListener() {
+          @Override
+          public void onLockInputResult(GestureLockViewGroup.LockInputResult lockResultType) {
+                switch (lockResultType) {
+                    case LOCK_INPUT_RIGHT: // 手势输入正确
+                        break;
+                    case LOCK_INPUT_WRONG: // 手势输入错误
+                        break;
+                    case LOCK_INPUT_LESS: // 手势输入少于4位
+                        break;
+                    case LOCK_INPUT_OVER_TIME: // 手势输入次数超过5次
+                        break;
+                    case LOCK_INPUT_PRESS: // 当按压屏幕时
+                        break;
+                 }
+            }
+        }
+);
+gestureLockViewGroup.reset(); // 重置手势密码界面
+gestureLockViewGroup.setMaxTryTimes(5);// 设置最大尝试次数
+gestureLockViewGroup.getMaxTryTimes(); // 得到剩余尝试次数
+```
 ##### loopBanner 轮播
 ```xml
 <cn.aberic.avast.view.loopBanner.AViewPager
@@ -135,3 +172,70 @@ avast:color_finger_up_wrong="0xFF939090" // 手指离开时内外圆颜色(密�
     avast:showDots="true" // 显示小圆点
 />
 ```
+```java
+avast:showDots="true" // 显示圆点指标与否
+avast:isLoop="false" // 循环与否
+avast:isAutoPlay="false" // 自动播放与否
+avast:marginBottom="12" // 距离底部高度
+avast:dotBackground="0xFF939090" // 小圆点背景色
+avast:dotRes="0xFF939090" // 圆点未选中颜色
+avast:dotChooseRes="0xFF939090" // 圆点选中颜色
+avast:dotMargins="2" // 圆点间距
+```
+```java
+AViewPager aViewPager =  (AViewPager) itemView.findViewById(R.id.loop);
+ArrayList<String> imgPaths = new ArrayList<>();
+int size = banners.size();
+for (int i = 0; i < size; i++) {
+    imgPaths.add(banners.get(i).imgPath);
+}
+aViewPager.initAViewPagerOnItemClick(imgPaths, new CallBack.OnItemClickListener() {
+    @Override
+    public void onItemClick(View v, int position) {
+        listener.bannerClick(banners.get(position).url);
+    }
+});
+```
+##### LoadContentLayout
+```xml
+<cn.aberic.avast.view.LoadContentLayout
+    android:id="@+id/loadContent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    avast:emptyView="@layout/view_empty" // 设置加载为空界面
+    avast:errorView="@layout/view_error" // 设置加载失败界面
+    avast:loadingView="@layout/view_loading" // 设置加载中界面
+    >
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</cn.aberic.avast.view.LoadContentLayout>
+```
+```java
+LoadContentLayout loadContentRoot = (LoadContentLayout) findViewById(R.id.loadContent);
+loadContentRoot.setViewState(LoadContentLayout.ContentState.VIEW_CONTENT);
+loadContentRoot.setViewState(LoadContentLayout.ContentState.VIEW_ERROR);
+loadContentRoot.setViewState(LoadContentLayout.ContentState.VIEW_EMPTY);
+loadContentRoot.setViewState(LoadContentLayout.ContentState.VIEW_LOADING);
+// 设置重新加载监听，当且仅当VIEW_ERROR生效
+loadContentRoot.setReLoad(new LoadContentLayout.LoadingListener() {
+    @Override
+    public void load() {
+        // 重新加载数据操作
+    }
+});
+```
+
+#### 感谢
+* [kaitiren](http://blog.csdn.net/kaitiren/article/details/38513715)
+* [CheeRok](http://blog.csdn.net/u012403246/article/details/47723365)
+* [MrSimp1e](http://blog.csdn.net/bboyfeiyu/article/details/44172273)
+* [MrSimp1e](http://blog.csdn.net/bboyfeiyu/article/details/43152997)
+* [鸿洋_](http://blog.csdn.net/lmj623565791/article/details/36236113)
+* [Kennyc1012](https://github.com/Kennyc1012/MultiStateView)
+* 其他相关作者和链接整理中……
+
+#### 尾巴
+AVast 很多内容都是参考学习其他大神的文章或项目，其中手势密码仅修改部分功能和添加注释，LoadContentLayout源码摘自MultiStateView。
+很多引用来源的注释尚未补全，正在整理更新。
