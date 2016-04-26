@@ -235,7 +235,7 @@ loadContentRoot.setReLoad(new LoadContentLayout.LoadingListener() {
 * [鸿洋_](http://blog.csdn.net/lmj623565791/article/details/36236113)
 * [Kennyc1012](https://github.com/Kennyc1012/MultiStateView)
 * [Biliping](https://github.com/Biliping)
-* 其他相关作者和链接整理中……
+* 其他相关参考来源和链接整理中…
 
 #### 尾巴
 AVast 很多内容都是参考学习其他大神的文章或项目，其中手势密码仅修改部分功能和添加注释，LoadContentLayout源码摘自MultiStateView。
