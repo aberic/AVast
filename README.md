@@ -226,6 +226,26 @@ loadContentRoot.setReLoad(new LoadContentLayout.LoadingListener() {
     }
 });
 ```
+##### vast-AUtil 常用工具类用法
+```java
+AVast.obtain().util.toast.showShort(String str); // 短时间显示Toast
+AVast.obtain().util.toast.showLong(String str); // 长时间显示Toast
+AVast.obtain().util.imageCompressSize… // 图片压缩功能类
+AVast.obtain().util.file… // 与File相关方法
+AVast.obtain().util.date… // 一般日期（时间）处理通用公共方法类
+AVast.obtain().util.md5… // MD5加密处理工具类
+AVast.obtain().util.sharePfs… // SharedPreferences存储工具类
+AVast.obtain().util.method… // 一般通用公共方法类
+AVast.obtain().util.bitmap… // 一般 Bitmap（图片）处理通用公共方法类
+AVast.obtain().util.zip… // 实现的Zip工具
+AVast.obtain().util.sdCard… // SD卡工具箱
+AVast.obtain().util.webView… // WebView管理器，提供常用设置
+AVast.obtain().util.regex… // 正则验证相关操作
+AVast.obtain().util.netWork… // 网络工作工具类
+AVast.obtain().util.input… // 软键盘工具类
+AVast.obtain().util.dialog… // 弹窗工具类
+AVast.obtain().util.notification… // 通知工具类
+```
 
 #### 感谢
 * [kaitiren](http://blog.csdn.net/kaitiren/article/details/38513715)
