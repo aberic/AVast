@@ -234,6 +234,7 @@ loadContentRoot.setReLoad(new LoadContentLayout.LoadingListener() {
 * [MrSimp1e](http://blog.csdn.net/bboyfeiyu/article/details/43152997)
 * [鸿洋_](http://blog.csdn.net/lmj623565791/article/details/36236113)
 * [Kennyc1012](https://github.com/Kennyc1012/MultiStateView)
+* [Biliping](https://github.com/Biliping)
 * 其他相关作者和链接整理中……
 
 #### 尾巴
