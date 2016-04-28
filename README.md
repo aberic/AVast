@@ -14,7 +14,7 @@
 * LoadContentLayout 页面默认加载状态（加载中、加载失败、加载完成、加载数据为空）
 
 #### 用例
-##### http
+##### http 网络请求
 ```java
 RequestParams params = new RequestParams();
 params.put("key", "value");
@@ -59,7 +59,7 @@ AVast.obtain().http.download(String url, String fileName, String fileType, new R
     }
 });
 ```
-##### image loader
+##### image loader 图片异步加载
 ```java
 // 普通加载
 AVast.obtain().image.bindImage(ImageView imageView, String uri);
@@ -74,6 +74,7 @@ AVast.obtain().image.bindImageInCorner(ImageView imageView, String uri);
 // 圆形加载
 AVast.obtain().image.bindImageInCircular(ImageView imageView, String uri);
 ```
+######或
 ```xml
 <cn.aberic.avast.view.AImageView
     android:id="@+id/img"
@@ -85,7 +86,7 @@ AVast.obtain().image.bindImageInCircular(ImageView imageView, String uri);
 AImageView aImageView = (AImageView) findViewById(R.id.img);
 aImageView.setImageUrl(String url); // 设置加载图片(允许类型(http://-mipmap://-drawable://-file://))
 ```
-##### cache
+##### cache 缓存应用
 ```java
 // 缓存 String
 AVast.obtain().cache.stringCache.get(CacheRequest key);
@@ -96,7 +97,7 @@ AVast.obtain().cache.bitmapCache.get(CacheRequest key);
 // 获取缓存 bitmap
 AVast.obtain().cache.bitmapCache.put(CacheRequest key, T t);
 ```
-##### pool
+##### pool 线程池简单应用
 ```java
 // 在已有线程池中执行耗时任务
 AVast.obtain().pool.submitFixed(new Runnable() {
@@ -114,6 +115,26 @@ AVast.obtain().pool.submitScheduled(new Runnable() {
         // 定时任务
     }
 }, long initialDelay, long period, TimeUnit unit);
+```
+##### shape 图片形状（圆角、圆形）处理
+```java
+AVast.obtain().shape.circularShape.makeShape(ImageView imageView, int resId, ShapeConfig config);
+AVast.obtain().shape.circularShape.makeShape(ImageView imageView, Bitmap bitmap, ShapeConfig config);
+AVast.obtain().shape.circularShape.makeShape(ImageView imageView, Bitmap bitmap);
+AVast.obtain().shape.circularShape.makeShape(ImageView imageView, int resId);
+AVast.obtain().shape.cornerShape.makeShape(…);
+```
+##### util-TimerUtil 定时器
+```java
+TimerUtil timerUtil;
+timerUtil = new TimerUtil(false);
+timerUtil.start(3 * 1000, 3 * 1000);
+timerUtil.monitorTimer(new TimerUtil.TimerListener() {
+    @Override
+    public void onTimerListener() {
+        // 执行定时任务
+    }
+});
 ```
 ##### lockView 手势密码
 ```xml
@@ -196,7 +217,7 @@ aViewPager.initAViewPagerOnItemClick(imgPaths, new CallBack.OnItemClickListener(
     }
 });
 ```
-##### LoadContentLayout
+##### LoadContentLayout 页面默认加载状态（加载中、加载失败、加载完成、加载数据为空）
 ```xml
 <cn.aberic.avast.view.LoadContentLayout
     android:id="@+id/loadContent"
