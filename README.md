@@ -14,6 +14,38 @@
 * LoadContentLayout 页面默认加载状态（加载中、加载失败、加载完成、加载数据为空）
 
 #### 用例
+##### AVast 初始化
+```java
+public class App extends Application {
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        AVast.obtain().init(
+            new AVastConfig().init(this)
+                .setFail(R.drawable.icon_load_fail)
+                .setLoading(R.drawable.icon_loading)
+                .setImageViewScaleType(ImageView.ScaleType.CENTER_CROP);
+    }
+}
+```
+```xml
+在 manifest 内替换 Application 为自定义 App
+<application
+        android:name=".App"
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+    </application>
+```
 ##### http 网络请求
 ```java
 RequestParams params = new RequestParams();
